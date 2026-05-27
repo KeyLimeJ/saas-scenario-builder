@@ -338,15 +338,18 @@ window.addEventListener('hashchange', () => {
 });
 
 // ─── CHANNEL DATA ────────────────────────────────────────────────
+// Calibrated for a mid-market B2B SaaS Employee Experience Platform
+// (think Lattice / 15Five / Culture Amp competitor — 50-500 employee customers,
+// sales-assisted, $200/mo blended ARPA, annual-contract-heavy).
 // Every channel owns its own CPM, spend, AND its own funnel conversion rates.
 // CAC is fully derived: spend / (impressions × CTR × signup × trial × paid).
 const CHANNELS = [
-  { tag: 'C1', name: 'Paid Search',   cpm:  40, spend: 22000, ctr: 2.5,  sig:  7,  tri: 60, pd: 25 },
-  { tag: 'C2', name: 'Paid Social',   cpm:  15, spend: 18000, ctr: 1.2,  sig:  4,  tri: 45, pd: 16 },
-  { tag: 'C3', name: 'Organic / SEO', cpm:   2, spend:  8000, ctr: 4.0,  sig:  8,  tri: 65, pd: 28 },
-  { tag: 'C4', name: 'Referral',      cpm:   3, spend:  5000, ctr: 5.0,  sig: 12,  tri: 70, pd: 35 },
-  { tag: 'C5', name: 'Outbound',      cpm: 200, spend: 12000, ctr: 8.0,  sig: 18,  tri: 55, pd: 30 },
-  { tag: 'C6', name: 'Partnerships',  cpm:  25, spend:  9000, ctr: 3.0,  sig: 10,  tri: 60, pd: 25 }
+  { tag: 'C1', name: 'Paid Search',   cpm:  80, spend: 25000, ctr: 2.0, sig: 2.5, tri: 50, pd: 22 },
+  { tag: 'C2', name: 'Paid Social',   cpm:  50, spend: 20000, ctr: 1.2, sig: 2.0, tri: 45, pd: 20 },
+  { tag: 'C3', name: 'Organic / SEO', cpm:   8, spend: 10000, ctr: 4.0, sig: 0.5, tri: 45, pd: 20 },
+  { tag: 'C4', name: 'Referral',      cpm:  20, spend:  3000, ctr: 4.0, sig: 1.0, tri: 60, pd: 35 },
+  { tag: 'C5', name: 'Outbound',      cpm: 400, spend: 18000, ctr: 4.0, sig: 4.0, tri: 40, pd: 25 },
+  { tag: 'C6', name: 'Partnerships',  cpm:  50, spend:  8000, ctr: 2.5, sig: 1.0, tri: 55, pd: 30 }
 ];
 
 // ─── BUILD PER-CHANNEL COLUMNS ───────────────────────────────────
@@ -823,8 +826,12 @@ function calc() {
   const arrEnd              = simWith.mrr[months - 1] * 1000 * 12;
 
   // ── Composite metrics
-  const nrr = 1 + expMo - contract - revChurn;
-  const grr = 1 - revChurn;
+  // NRR/GRR are monthly factors here, but the industry conventions for the
+  // ribbon benchmarks (≥110% NRR, ≥90% GRR) are annualized — so we compound 12 months.
+  const nrrMonthly = 1 + expMo - contract - revChurn;
+  const grrMonthly = 1 - revChurn - contract;
+  const nrr = Math.pow(nrrMonthly, 12);   // annualized
+  const grr = Math.pow(grrMonthly, 12);   // annualized
   const growth12 = arrSeries[11] > 0 ? (arrSeries[23] - arrSeries[11]) / arrSeries[11] : 0;
   const fcfMargin = (grossMargin - (totalSpend * 12) / Math.max(1, arrEnd)) * 100;
   const r40 = (growth12 * 100) + fcfMargin;
@@ -1037,8 +1044,8 @@ function calc() {
     });
     const nrrSeries = [], grrSeries = [];
     for (let m = 1; m <= 12; m++) {
-      nrrSeries.push(Math.pow(nr_monthly(expMo, contract, revChurn), m / 12));
-      grrSeries.push(Math.pow(1 - revChurn, m));
+      nrrSeries.push(Math.pow(nrrMonthly, m));
+      grrSeries.push(Math.pow(grrMonthly, m));
     }
     ch.data.labels = labels.slice(0, 12);
     ch.data.datasets = [

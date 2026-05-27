@@ -1192,7 +1192,7 @@
       <div class="sb-mark">
         <span class="sb-mark-title">Scenario Builder</span>
       </div>
-      <div class="sb-tag">SaaS Analytics Demo</div>
+      <div class="sb-tag">Mid-market B2B SaaS · HR Tech</div>
     </div>
 
     <nav class="sb-nav">
@@ -1416,27 +1416,27 @@
           <div class="inp-row four">
             <div class="inp-grp">
               <span class="inp-label"><span class="term" data-term="ARPA">ARPA</span> ($/mo)</span>
-              <input type="number" class="num-inp" id="m-arpa" value="180" min="10" step="5">
+              <input type="number" class="num-inp" id="m-arpa" value="200" min="10" step="5">
               <span class="inp-hint">Monthly average revenue per account</span>
             </div>
             <div class="inp-grp">
               <span class="inp-label"><span class="term" data-term="AOV">AOV</span> — annual ($)</span>
-              <input type="number" class="num-inp" id="m-aov" value="2400" min="100" step="100">
+              <input type="number" class="num-inp" id="m-aov" value="2400" min="100" step="100" data-default-aov>
               <span class="inp-hint">Annual contract value</span>
             </div>
             <div class="inp-grp">
               <span class="inp-label">% <span class="term" data-term="Annual contracts">Annual contracts</span></span>
               <div class="slider-row">
-                <input type="range" class="hrange" id="m-annual" min="0" max="100" step="5" value="35">
-                <span class="range-val" id="m-annual-v">35%</span>
+                <input type="range" class="hrange" id="m-annual" min="0" max="100" step="5" value="60">
+                <span class="range-val" id="m-annual-v">60%</span>
               </div>
               <span class="inp-hint">Share of customers paying yearly (AOV upfront) vs monthly. Shifts blended ARPA toward $AOV/12.</span>
             </div>
             <div class="inp-grp">
               <span class="inp-label"><span class="term" data-term="Expansion">Expansion</span> / mo</span>
               <div class="slider-row">
-                <input type="range" class="hrange" id="m-exp" min="0" max="8" step="0.1" value="1.8">
-                <span class="range-val" id="m-exp-v">1.8%</span>
+                <input type="range" class="hrange" id="m-exp" min="0" max="8" step="0.1" value="2.5">
+                <span class="range-val" id="m-exp-v">2.5%</span>
               </div>
               <span class="inp-hint">Existing customers spending more (upsells, more seats). % of current MRR — compounds month over month.</span>
             </div>
@@ -1447,8 +1447,8 @@
             <div class="inp-grp">
               <span class="inp-label"><span class="term" data-term="Gross Margin">Gross Margin</span></span>
               <div class="slider-row">
-                <input type="range" class="hrange" id="m-gm" min="40" max="95" step="1" value="72">
-                <span class="range-val" id="m-gm-v">72%</span>
+                <input type="range" class="hrange" id="m-gm" min="40" max="95" step="1" value="75">
+                <span class="range-val" id="m-gm-v">75%</span>
               </div>
               <span class="inp-hint">Share of revenue left after the cost of delivering the service (hosting, payment processing, customer support). Feeds LTV, CAC Payback, and Rule of 40. B2B SaaS norm: 70–85%.</span>
             </div>
@@ -1501,32 +1501,32 @@
             <div class="inp-grp">
               <span class="inp-label">Logo <span class="term" data-term="Churn">churn</span> / mo</span>
               <div class="slider-row">
-                <input type="range" class="hrange warn" id="r-logo" min="0.5" max="10" step="0.1" value="3.2">
-                <span class="range-val" id="r-logo-v">3.2%</span>
+                <input type="range" class="hrange warn" id="r-logo" min="0.5" max="10" step="0.1" value="1.5">
+                <span class="range-val" id="r-logo-v">1.5%</span>
               </div>
               <span class="inp-hint">Account cancellations</span>
             </div>
             <div class="inp-grp">
               <span class="inp-label">Revenue <span class="term" data-term="Churn">churn</span> / mo</span>
               <div class="slider-row">
-                <input type="range" class="hrange warn" id="r-rev" min="0.5" max="10" step="0.1" value="4.0">
-                <span class="range-val" id="r-rev-v">4.0%</span>
+                <input type="range" class="hrange warn" id="r-rev" min="0.5" max="10" step="0.1" value="1.0">
+                <span class="range-val" id="r-rev-v">1.0%</span>
               </div>
               <span class="inp-hint">Net of downgrades</span>
             </div>
             <div class="inp-grp">
               <span class="inp-label"><span class="term" data-term="Contraction">Contraction</span> / mo</span>
               <div class="slider-row">
-                <input type="range" class="hrange warn" id="r-contract" min="0" max="5" step="0.1" value="0.8">
-                <span class="range-val" id="r-contract-v">0.8%</span>
+                <input type="range" class="hrange warn" id="r-contract" min="0" max="5" step="0.1" value="0.3">
+                <span class="range-val" id="r-contract-v">0.3%</span>
               </div>
               <span class="inp-hint">Seat reductions</span>
             </div>
             <div class="inp-grp">
               <span class="inp-label"><span class="term" data-term="Winback">Winback</span> / mo</span>
               <div class="slider-row">
-                <input type="range" class="hrange" id="r-winback" min="0" max="20" step="0.5" value="6">
-                <span class="range-val" id="r-winback-v">6.0%</span>
+                <input type="range" class="hrange" id="r-winback" min="0" max="20" step="0.5" value="5">
+                <span class="range-val" id="r-winback-v">5.0%</span>
               </div>
               <span class="inp-hint">Reactivation of churned cohort</span>
             </div>
@@ -1576,16 +1576,16 @@
             <div class="inp-grp">
               <span class="inp-label"><span class="term" data-term="Viral coefficient">Viral Coefficient</span> (k)</span>
               <div class="slider-row">
-                <input type="range" class="hrange" id="v-k" min="0" max="40" step="0.5" value="8">
-                <span class="range-val" id="v-k-v">8.0%</span>
+                <input type="range" class="hrange" id="v-k" min="0" max="40" step="0.5" value="4">
+                <span class="range-val" id="v-k-v">4.0%</span>
               </div>
               <span class="inp-hint">% of active customers who refer 1 new logo per month</span>
             </div>
             <div class="inp-grp">
               <span class="inp-label">Referral Lag</span>
               <div class="slider-row">
-                <input type="range" class="hrange" id="v-lag" min="1" max="6" step="1" value="2">
-                <span class="range-val" id="v-lag-v">2 mo</span>
+                <input type="range" class="hrange" id="v-lag" min="1" max="6" step="1" value="3">
+                <span class="range-val" id="v-lag-v">3 mo</span>
               </div>
               <span class="inp-hint">Months from referral to paying account</span>
             </div>
