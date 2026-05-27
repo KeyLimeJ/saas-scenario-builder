@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS Scenario Builder · Director of Data Analytics</title>
+<meta name="description" content="Interactive SaaS scenario builder demonstrating data analytics leadership for Director-level interviews. Models acquisition, retention, unit economics, and predictive ML overlays.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+
+  :root {
+    --bg:        #0E1410;
+    --panel:     #141B16;
+    --panel-2:   #1A221C;
+    --panel-3:   #1F2823;
+    --border:    #232C26;
+    --border-2:  #2E3830;
+    --ink:       #F2EFE8;
+    --ink-mid:   #B8B3A6;
+    --ink-soft:  #7A766B;
+    --ink-faint: #4A4740;
+    --accent:    #C5E063;
+    --accent-2:  #7FA844;
+    --warn:      #E89F4A;
+    --bad:       #D96C5E;
+    --good:      #82C99B;
+    --ml:        #8AB4F0;
+    --grid:      rgba(255,255,255,0.04);
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body:    'Inter Tight', system-ui, sans-serif;
+    --font-num:     'JetBrains Mono', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* subtle grain */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 999;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.7;
+  }
+
+  /* ─── SHELL ─── */
+  .shell {
+    width: 100vw; height: 100vh;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: 1fr 32px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    grid-column: 1; grid-row: 1 / span 2;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 18px 0 0;
+  }
+  .sb-brand {
+    padding: 0 18px 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+  .sb-mark {
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .sb-mark-letter {
+    font-family: var(--font-display);
+    font-weight: 800; font-style: italic;
+    font-size: 26px; color: var(--accent);
+    letter-spacing: -0.04em; line-height: 1;
+  }
+  .sb-mark-title {
+    font-family: var(--font-display);
+    font-weight: 600; font-style: italic;
+    font-size: 14px; color: var(--ink);
+    letter-spacing: -0.01em; line-height: 1;
+  }
+  .sb-tag {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 500;
+    margin-top: 6px;
+  }
+
+  .sb-nav {
+    flex: 1;
+    padding: 0 10px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .sb-section-label {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600;
+    padding: 14px 12px 6px;
+  }
+  .sb-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ink-mid);
+    font-size: 12px; font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+  }
+  .sb-item:hover { background: var(--panel-2); color: var(--ink); }
+  .sb-item.active {
+    background: var(--panel-3);
+    color: var(--ink);
+  }
+  .sb-item.active::before {
+    content: ''; position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 2px; background: var(--accent);
+    border-radius: 2px;
+  }
+  .sb-item-icon {
+    width: 14px; height: 14px; flex-shrink: 0;
+    color: var(--ink-soft);
+  }
+  .sb-item.active .sb-item-icon { color: var(--accent); }
+  .sb-item-num {
+    margin-left: auto;
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 9px; color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+
+  .sb-foot {
+    border-top: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .sb-foot-name {
+    font-family: var(--font-display); font-weight: 600; font-style: italic;
+    font-size: 13px; color: var(--ink);
+  }
+  .sb-foot-role {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .sb-ml-state {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 10px;
+    margin-top: 10px;
+    background: rgba(138,180,240,0.06);
+    border: 1px solid rgba(138,180,240,0.22);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sb-ml-state:hover { background: rgba(138,180,240,0.1); }
+  .sb-ml-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--ml); box-shadow: 0 0 6px var(--ml);
+  }
+  .sb-ml-txt {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ml); flex: 1;
+  }
+  .sb-ml-toggle {
+    font-size: 8px; letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+
+  /* ─── MAIN AREA ─── */
+  .main {
+    grid-column: 2; grid-row: 1;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  .main-head {
+    flex-shrink: 0;
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .main-eyebrow {
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .main-title {
+    font-family: var(--font-display); font-weight: 600; font-style: italic;
+    font-size: 22px; color: var(--ink);
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .main-sub {
+    font-size: 12px; color: var(--ink-mid);
+    margin-top: 4px; max-width: 720px;
+    line-height: 1.4;
+  }
+
+  .main-body {
+    flex: 1;
+    padding: 16px 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .main-body::-webkit-scrollbar { width: 6px; }
+  .main-body::-webkit-scrollbar-track { background: transparent; }
+  .main-body::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+  /* ─── VIEW ─── */
+  .view { display: none; flex-direction: column; gap: 14px; }
+  .view.active { display: flex; }
+
+  /* ─── KPI STRIP (Overview only) ─── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .kpi {
+    padding: 14px 16px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .kpi:last-child { border-right: none; }
+  .kpi-label {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .kpi-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 20px; color: var(--ink);
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .kpi-val.green { color: var(--accent); }
+  .kpi-val.good  { color: var(--good); }
+  .kpi-val.bad   { color: var(--bad); }
+  .kpi-val.warn  { color: var(--warn); }
+  .kpi-bench {
+    font-size: 9px; color: var(--ink-faint);
+    font-style: italic; letter-spacing: 0.04em;
+  }
+
+  /* ─── COMPOSITE RIBBON (Overview only) ─── */
+  .ribbon {
+    display: flex; align-items: center;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    gap: 0;
+  }
+  .ribbon-label {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600;
+    margin-right: 14px;
+  }
+  .ribbon-items { display: flex; align-items: center; flex: 1; }
+  .ribbon-item {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 0 14px;
+    border-right: 1px solid var(--border);
+  }
+  .ribbon-item:last-child { border-right: none; }
+  .ribbon-item:first-child { padding-left: 0; }
+  .ribbon-name {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 500;
+  }
+  .ribbon-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 12px; color: var(--ink);
+  }
+  .ribbon-val.good { color: var(--good); }
+  .ribbon-val.warn { color: var(--warn); }
+  .ribbon-val.bad  { color: var(--bad); }
+  .ribbon-bench {
+    font-size: 8px; color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ─── SECTIONS / CARDS ─── */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex; flex-direction: column;
+  }
+  .card-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 14px;
+  }
+  .card-title {
+    font-family: var(--font-display); font-weight: 600; font-style: italic;
+    font-size: 14px; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .card-sub {
+    font-size: 10px; color: var(--ink-soft);
+    margin-top: 3px; letter-spacing: 0.04em;
+  }
+  .card-tag {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent);
+    padding: 4px 9px;
+    background: rgba(197,224,99,0.08);
+    border: 1px solid rgba(197,224,99,0.25);
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+  .card-tag.ml { color: var(--ml); background: rgba(138,180,240,0.08); border-color: rgba(138,180,240,0.25); }
+  .card-tag.warn { color: var(--warn); background: rgba(232,159,74,0.08); border-color: rgba(232,159,74,0.25); }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .row-2-asym { display: grid; grid-template-columns: 360px 1fr; gap: 12px; }
+
+  /* ─── INPUTS ─── */
+  .inp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .inp-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .inp-row.four  { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .inp-grp { display: flex; flex-direction: column; gap: 6px; }
+  .inp-label {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .inp-hint {
+    font-size: 9px; color: var(--ink-faint); font-style: italic;
+    line-height: 1.4;
+  }
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+  .hrange {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 3px; border-radius: 99px;
+    background: var(--border-2); outline: none; cursor: pointer;
+  }
+  .hrange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    cursor: pointer;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .hrange::-moz-range-thumb {
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg); cursor: pointer;
+  }
+  .hrange.warn::-webkit-slider-thumb { background: var(--warn); box-shadow: 0 0 0 1px var(--warn); }
+  .hrange.warn::-moz-range-thumb { background: var(--warn); }
+  .hrange.ml::-webkit-slider-thumb { background: var(--ml); box-shadow: 0 0 0 1px var(--ml); }
+  .hrange.ml::-moz-range-thumb { background: var(--ml); }
+  .range-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 12px; color: var(--ink);
+    min-width: 48px; text-align: right;
+  }
+  .num-inp {
+    border: 1px solid var(--border-2); border-radius: 5px;
+    padding: 7px 10px;
+    font-family: var(--font-num); font-weight: 700; font-size: 12px;
+    color: var(--ink); background: var(--bg);
+    outline: none; width: 100%;
+    transition: border-color 0.15s;
+  }
+  .num-inp:focus { border-color: var(--accent); }
+
+  /* ─── CHANNEL GRID ─── */
+  .ch-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .ch-col {
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--border);
+    padding: 12px 10px;
+    gap: 5px;
+    background: var(--panel-2);
+  }
+  .ch-col:last-child { border-right: none; }
+  .ch-tag {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ch-name {
+    font-size: 11px; color: var(--ink); line-height: 1.25;
+    min-height: 28px; font-weight: 500;
+  }
+  .ch-cell {
+    display: flex; flex-direction: column; gap: 2px;
+    margin-top: 6px;
+    padding: 6px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .ch-cell:hover { border-color: var(--accent); background: rgba(197,224,99,0.04); }
+  .ch-cell-lbl {
+    font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .ch-cell-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 12px; color: var(--ink);
+  }
+  .ch-result {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 17px; color: var(--accent);
+    letter-spacing: -0.02em; line-height: 1;
+    margin-top: 8px;
+  }
+  .ch-result-sub {
+    font-size: 8px; color: var(--ink-soft);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  /* ─── EDIT OVERLAY ─── */
+  .ov {
+    display: none; position: fixed; inset: 0; z-index: 9000;
+    background: rgba(14,20,16,0.7);
+    backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+  .ov.open { display: flex; }
+  .ov-card {
+    background: var(--panel);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    padding: 24px 28px 20px;
+    width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .ov-seg {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .ov-title {
+    font-family: var(--font-display); font-weight: 600; font-style: italic;
+    font-size: 18px; color: var(--ink); margin-bottom: 18px;
+  }
+  .ov-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .ov-field { display: flex; flex-direction: column; gap: 6px; }
+  .ov-lbl {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 500;
+  }
+  .ov-inp {
+    border: 1px solid var(--border-2); border-radius: 6px;
+    padding: 9px 12px;
+    font-family: var(--font-num); font-weight: 700; font-size: 14px;
+    color: var(--ink); background: var(--bg);
+    outline: none; width: 100%;
+  }
+  .ov-inp:focus { border-color: var(--accent); }
+  .ov-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .ov-btn {
+    font-family: var(--font-body); font-weight: 600;
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    border: none; border-radius: 6px; padding: 9px 18px; cursor: pointer;
+  }
+  .ov-btn.cancel { background: var(--border-2); color: var(--ink-mid); }
+  .ov-btn.cancel:hover { background: var(--border); }
+  .ov-btn.save { background: var(--accent); color: var(--bg); }
+  .ov-btn.save:hover { background: var(--accent-2); }
+
+  /* ─── ML MODEL CARDS ─── */
+  .ml-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .ml-card {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--ml);
+    border-radius: 6px;
+    padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .ml-card-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .ml-card-name {
+    font-family: var(--font-display); font-weight: 600; font-style: italic;
+    font-size: 14px; color: var(--ink); letter-spacing: -0.01em;
+  }
+  .ml-card-status {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--good);
+    padding: 3px 8px;
+    background: rgba(130,201,155,0.1);
+    border-radius: 99px;
+  }
+  .ml-card-method {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 10px; color: var(--ml);
+  }
+  .ml-card-desc {
+    font-size: 11px; color: var(--ink-mid);
+    line-height: 1.5;
+  }
+  .ml-card-metrics {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .ml-card-metric { display: flex; flex-direction: column; gap: 2px; }
+  .ml-card-metric-name {
+    font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .ml-card-metric-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 12px; color: var(--ink);
+  }
+
+  /* ─── CHART WRAP ─── */
+  .canvas-wrap { position: relative; flex: 1; min-height: 220px; }
+  .canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+  .chart-card { min-height: 280px; }
+  .chart-card.tall { min-height: 340px; }
+
+  /* ─── COHORT HEATMAP ─── */
+  .cohort-wrap {
+    flex: 1; min-height: 220px;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 4px;
+  }
+  .cohort-labels {
+    display: flex; flex-direction: column; justify-content: space-around;
+    font-family: var(--font-num); font-weight: 500;
+    font-size: 9px; color: var(--ink-soft);
+    padding-right: 4px; text-align: right;
+  }
+  .cohort-grid { display: grid; gap: 2px; }
+  .cohort-cell {
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 9px; color: var(--bg);
+  }
+
+  /* ─── FUNNEL VIZ ─── */
+  .funnel-viz {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 8px 0;
+  }
+  .funnel-stage {
+    display: grid; grid-template-columns: 130px 1fr 90px; align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+  .funnel-stage-name {
+    font-size: 11px; color: var(--ink-mid); font-weight: 500;
+  }
+  .funnel-bar-wrap {
+    height: 28px; background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px; overflow: hidden;
+    position: relative;
+  }
+  .funnel-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-2) 0%, var(--accent) 100%);
+    transition: width 0.3s ease;
+  }
+  .funnel-stage-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 12px; color: var(--ink); text-align: right;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    grid-column: 2; grid-row: 2;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 24px; gap: 14px;
+  }
+  .footer-num {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .footer-sep { width: 1px; height: 14px; background: var(--border-2); }
+  .footer-txt {
+    font-size: 10px; color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+  .footer-right {
+    margin-left: auto;
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ─── INSIGHT CALLOUT ─── */
+  .insight {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .insight.ml { border-left-color: var(--ml); }
+  .insight.warn { border-left-color: var(--warn); }
+  .insight-eyebrow {
+    font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .insight-txt {
+    font-size: 12px; color: var(--ink-mid); line-height: 1.5;
+  }
+  .insight-txt strong { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-mark">
+        <span class="sb-mark-letter">J.</span>
+        <span class="sb-mark-title">Scenario Builder</span>
+      </div>
+      <div class="sb-tag">SaaS Analytics Demo</div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-section-label">Analytics</div>
+
+      <div class="sb-item active" data-view="overview" onclick="goto('overview')">
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
+        <span>Overview</span>
+        <span class="sb-item-num">01</span>
+      </div>
+      <div class="sb-item" data-view="acquisition" onclick="goto('acquisition')">
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><path d="M2 13 L6 9 L9 11 L14 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.6" fill="currentColor"/></svg>
+        <span>Acquisition</span>
+        <span class="sb-item-num">02</span>
+      </div>
+      <div class="sb-item" data-view="monetization" onclick="goto('monetization')">
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 4 V12 M6 6.5 H10 M6 9.5 H10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <span>Monetization</span>
+        <span class="sb-item-num">03</span>
+      </div>
+      <div class="sb-item" data-view="retention" onclick="goto('retention')">
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><path d="M2 8 a6 6 0 1 1 6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M2 6 V9 H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Retention</span>
+        <span class="sb-item-num">04</span>
+      </div>
+      <div class="sb-item" data-view="unit-econ" onclick="goto('unit-econ')">
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="11" width="2.5" height="3" fill="currentColor"/><rect x="6" y="8" width="2.5" height="6" fill="currentColor"/><rect x="10" y="4" width="2.5" height="10" fill="currentColor"/></svg>
+        <span>Unit Economics</span>
+        <span class="sb-item-num">05</span>
+      </div>
+
+      <div class="sb-section-label">Intelligence</div>
+      <div class="sb-item" data-view="predictive" onclick="goto('predictive')">
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="11" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 7 L8 9 M11 7 L8 9" stroke="currentColor" stroke-width="1.3"/></svg>
+        <span>Predictive · ML</span>
+        <span class="sb-item-num">06</span>
+      </div>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="sb-foot-name">Director · Data Analytics</div>
+      <div class="sb-foot-role">Interview Demo</div>
+      <div class="sb-ml-state" onclick="toggleML()">
+        <div class="sb-ml-dot" id="sb-ml-dot"></div>
+        <span class="sb-ml-txt" id="sb-ml-txt">ML · ON</span>
+        <span class="sb-ml-toggle">CLICK</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+    <div class="main-head">
+      <div class="main-eyebrow" id="m-eyebrow">01 · OVERVIEW</div>
+      <div class="main-title" id="m-title">Executive Snapshot</div>
+      <div class="main-sub" id="m-sub">The six KPIs named in the role definition, recomputed live as scenario inputs change. Composite ratios on the ribbon below show how the business compounds on top of them.</div>
+    </div>
+
+    <div class="main-body">
+
+      <!-- ═══════════════ VIEW 01 · OVERVIEW ═══════════════ -->
+      <div class="view active" id="v-overview">
+
+        <!-- JD KPI strip -->
+        <div class="kpi-strip">
+          <div class="kpi">
+            <span class="kpi-label">ARR · Year 1</span>
+            <span class="kpi-val green" id="o-arr">—</span>
+            <span class="kpi-bench">Annualized from end-month MRR</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">ARPA</span>
+            <span class="kpi-val" id="o-arpa">—</span>
+            <span class="kpi-bench">Blended monthly + annual</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">LTV</span>
+            <span class="kpi-val" id="o-ltv">—</span>
+            <span class="kpi-bench" id="o-ltv-method">BG/NBD model</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">CAC · Blended</span>
+            <span class="kpi-val" id="o-cac">—</span>
+            <span class="kpi-bench">Weighted across 6 channels</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Churn · Monthly</span>
+            <span class="kpi-val warn" id="o-churn">—</span>
+            <span class="kpi-bench">Logo · target ≤ 3%</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">AOV · Annual</span>
+            <span class="kpi-val" id="o-aov">—</span>
+            <span class="kpi-bench">Annual contract value</span>
+          </div>
+        </div>
+
+        <!-- Composite ribbon -->
+        <div class="ribbon">
+          <span class="ribbon-label">Composite</span>
+          <div class="ribbon-items">
+            <div class="ribbon-item"><span class="ribbon-name">LTV:CAC</span><span class="ribbon-val good" id="o-ltvcac">—</span><span class="ribbon-bench">≥ 3x</span></div>
+            <div class="ribbon-item"><span class="ribbon-name">Payback</span><span class="ribbon-val warn" id="o-pay">—</span><span class="ribbon-bench">≤ 12 mo</span></div>
+            <div class="ribbon-item"><span class="ribbon-name">NRR</span><span class="ribbon-val good" id="o-nrr">—</span><span class="ribbon-bench">≥ 110%</span></div>
+            <div class="ribbon-item"><span class="ribbon-name">GRR</span><span class="ribbon-val good" id="o-grr">—</span><span class="ribbon-bench">≥ 90%</span></div>
+            <div class="ribbon-item"><span class="ribbon-name">Rule of 40</span><span class="ribbon-val good" id="o-r40">—</span><span class="ribbon-bench">≥ 40</span></div>
+            <div class="ribbon-item"><span class="ribbon-name">Magic #</span><span class="ribbon-val good" id="o-mn">—</span><span class="ribbon-bench">≥ 0.75</span></div>
+          </div>
+        </div>
+
+        <!-- Main ARR chart -->
+        <div class="card chart-card tall">
+          <div class="card-head">
+            <div>
+              <div class="card-title">ARR &amp; Customer Stock · 24 mo</div>
+              <div class="card-sub">New + Expansion + Reactivation − Churn − Contraction</div>
+            </div>
+            <div class="card-tag">Scenario</div>
+          </div>
+          <div class="canvas-wrap"><canvas id="c-overview-stock"></canvas></div>
+        </div>
+
+        <div class="insight">
+          <span class="insight-eyebrow">Reading this view</span>
+          <span class="insight-txt">Each KPI above maps to the role definition. The composite ribbon is what a CFO or board actually opens a dashboard to see. Use the side nav to drive each lever and watch this overview recompute. The <strong>ML toggle</strong> in the sidebar footer swaps flat assumptions for model-driven inputs.</span>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════ VIEW 02 · ACQUISITION ═══════════════ -->
+      <div class="view" id="v-acquisition">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Channel Mix · 6 Acquisition Sources</div>
+              <div class="card-sub">Click any cell to edit CAC or spend. New-logo volume scales with the funnel below.</div>
+            </div>
+            <div class="card-tag" id="acq-total-tag">— new/mo</div>
+          </div>
+          <div class="ch-grid" id="ch-grid"></div>
+        </div>
+
+        <div class="row-2-asym">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Funnel Conversion</div>
+                <div class="card-sub">Stage-level rates · cumulative V→Paid drives volume lift</div>
+              </div>
+              <div class="card-tag" id="funnel-rate-tag">— %</div>
+            </div>
+            <div class="inp-grp" style="margin-bottom:14px;">
+              <span class="inp-label">Visitor → Signup</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="f-signup" min="1" max="20" step="0.5" value="6">
+                <span class="range-val" id="f-signup-v">6.0%</span>
+              </div>
+            </div>
+            <div class="inp-grp" style="margin-bottom:14px;">
+              <span class="inp-label">Signup → Trial</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="f-trial" min="10" max="100" step="1" value="55">
+                <span class="range-val" id="f-trial-v">55%</span>
+              </div>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">Trial → Paid</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="f-paid" min="5" max="60" step="0.5" value="22">
+                <span class="range-val" id="f-paid-v">22.0%</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Funnel Stages — Visitors → Paid</div>
+                <div class="card-sub">100k visitor cohort projected through stage rates</div>
+              </div>
+            </div>
+            <div class="funnel-viz" id="funnel-viz"></div>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">CAC Payback · by Channel</div>
+              <div class="card-sub">Months to recover CAC at blended ARPA × gross margin</div>
+            </div>
+            <div class="card-tag warn">Lower is better</div>
+          </div>
+          <div class="canvas-wrap"><canvas id="c-acq-payback"></canvas></div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════ VIEW 03 · MONETIZATION ═══════════════ -->
+      <div class="view" id="v-monetization">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Pricing &amp; Revenue Mix</div>
+              <div class="card-sub">ARPA, AOV, billing cadence and expansion drive top-line growth</div>
+            </div>
+            <div class="card-tag" id="mon-arpa-tag">— /mo</div>
+          </div>
+          <div class="inp-row four">
+            <div class="inp-grp">
+              <span class="inp-label">ARPA ($/mo)</span>
+              <input type="number" class="num-inp" id="m-arpa" value="180" min="10" step="5">
+              <span class="inp-hint">Monthly average revenue per account</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">AOV — annual ($)</span>
+              <input type="number" class="num-inp" id="m-aov" value="2400" min="100" step="100">
+              <span class="inp-hint">Annual contract value</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">% Annual contracts</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="m-annual" min="0" max="100" step="5" value="35">
+                <span class="range-val" id="m-annual-v">35%</span>
+              </div>
+              <span class="inp-hint">Annual vs. monthly billing mix</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">Expansion / mo</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="m-exp" min="0" max="8" step="0.1" value="1.8">
+                <span class="range-val" id="m-exp-v">1.8%</span>
+              </div>
+              <span class="inp-hint">Upsell / seat growth on base</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="card chart-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">MRR Composition · 24 mo</div>
+                <div class="card-sub">New · Expansion · Churn · Contraction stacked</div>
+              </div>
+              <div class="card-tag">Stacked</div>
+            </div>
+            <div class="canvas-wrap"><canvas id="c-mon-stack"></canvas></div>
+          </div>
+          <div class="card chart-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Revenue Mix · Annual vs. Monthly</div>
+                <div class="card-sub">Share of ARR by contract type, projected end-Y1</div>
+              </div>
+              <div class="card-tag">Mix</div>
+            </div>
+            <div class="canvas-wrap"><canvas id="c-mon-mix"></canvas></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════ VIEW 04 · RETENTION ═══════════════ -->
+      <div class="view" id="v-retention">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Retention Drivers</div>
+              <div class="card-sub">Churn (logo &amp; revenue), contraction and winback shape NRR/GRR and LTV</div>
+            </div>
+            <div class="card-tag warn" id="ret-disp-tag">—</div>
+          </div>
+          <div class="inp-row four">
+            <div class="inp-grp">
+              <span class="inp-label">Logo churn / mo</span>
+              <div class="slider-row">
+                <input type="range" class="hrange warn" id="r-logo" min="0.5" max="10" step="0.1" value="3.2">
+                <span class="range-val" id="r-logo-v">3.2%</span>
+              </div>
+              <span class="inp-hint">Account cancellations</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">Revenue churn / mo</span>
+              <div class="slider-row">
+                <input type="range" class="hrange warn" id="r-rev" min="0.5" max="10" step="0.1" value="4.0">
+                <span class="range-val" id="r-rev-v">4.0%</span>
+              </div>
+              <span class="inp-hint">Net of downgrades</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">Contraction / mo</span>
+              <div class="slider-row">
+                <input type="range" class="hrange warn" id="r-contract" min="0" max="5" step="0.1" value="0.8">
+                <span class="range-val" id="r-contract-v">0.8%</span>
+              </div>
+              <span class="inp-hint">Seat reductions</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">Winback / mo</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="r-winback" min="0" max="20" step="0.5" value="6">
+                <span class="range-val" id="r-winback-v">6.0%</span>
+              </div>
+              <span class="inp-hint">Reactivation of churned cohort</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="card chart-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Cohort Retention Heatmap</div>
+                <div class="card-sub">Rows = cohort · cols = months since signup</div>
+              </div>
+              <div class="card-tag">8 × 8</div>
+            </div>
+            <div class="cohort-wrap">
+              <div class="cohort-labels" id="cohort-labels"></div>
+              <div class="cohort-grid" id="cohort-grid"></div>
+            </div>
+          </div>
+          <div class="card chart-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">NRR &amp; GRR Trend · 12 mo</div>
+                <div class="card-sub">Net and gross retention compounding under current assumptions</div>
+              </div>
+              <div class="card-tag good">Retention</div>
+            </div>
+            <div class="canvas-wrap"><canvas id="c-ret-trend"></canvas></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════ VIEW 05 · UNIT ECONOMICS ═══════════════ -->
+      <div class="view" id="v-unit-econ">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Unit Economics · Headline</div>
+              <div class="card-sub">LTV, CAC, ratio and payback under the current scenario</div>
+            </div>
+            <div class="card-tag" id="ue-tag">—</div>
+          </div>
+          <div class="inp-row four">
+            <div class="inp-grp">
+              <span class="inp-label">LTV</span>
+              <span class="kpi-val" id="ue-ltv" style="font-size:22px;">—</span>
+              <span class="inp-hint" id="ue-ltv-meth">BG/NBD probabilistic CLV</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">CAC · blended</span>
+              <span class="kpi-val" id="ue-cac" style="font-size:22px;">—</span>
+              <span class="inp-hint">Weighted across 6 channels</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">LTV : CAC</span>
+              <span class="kpi-val good" id="ue-ratio" style="font-size:22px;">—</span>
+              <span class="inp-hint">Target ≥ 3x</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">CAC Payback</span>
+              <span class="kpi-val warn" id="ue-payback" style="font-size:22px;">—</span>
+              <span class="inp-hint">Target ≤ 12 mo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="card chart-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">LTV:CAC by Channel</div>
+                <div class="card-sub">Green ≥ 3x · Amber 1.5–3x · Red &lt; 1.5x</div>
+              </div>
+              <div class="card-tag">Channel</div>
+            </div>
+            <div class="canvas-wrap"><canvas id="c-ue-ratio"></canvas></div>
+          </div>
+          <div class="card chart-card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">CAC Payback by Channel</div>
+                <div class="card-sub">Months to recover CAC, lower is better</div>
+              </div>
+              <div class="card-tag warn">Payback</div>
+            </div>
+            <div class="canvas-wrap"><canvas id="c-ue-payback"></canvas></div>
+          </div>
+        </div>
+
+        <div class="insight">
+          <span class="insight-eyebrow">Strategic read</span>
+          <span class="insight-txt">Unit economics are a portfolio question, not a single number. The blended ratio can look healthy while one or two channels burn cash. Use channel-level LTV:CAC to reallocate spend, not just to grade.</span>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════ VIEW 06 · PREDICTIVE ═══════════════ -->
+      <div class="view" id="v-predictive">
+
+        <div class="insight ml">
+          <span class="insight-eyebrow">Models in production</span>
+          <span class="insight-txt">Four production models feed every metric in this app. Toggle <strong>ML · ON/OFF</strong> in the sidebar footer to swap between flat assumptions and model-driven inputs across every view. The pipeline is <strong>DBT</strong> for features, <strong>Python</strong> (XGBoost, lifetimes, Prophet, scikit-learn) for training, <strong>Snowflake</strong> Python UDFs for serving, and <strong>Looker</strong> for exposure.</span>
+        </div>
+
+        <div class="ml-grid">
+
+          <div class="ml-card">
+            <div class="ml-card-head">
+              <div class="ml-card-name">Churn Prediction</div>
+              <div class="ml-card-status">PROD</div>
+            </div>
+            <div class="ml-card-method">XGBoost · cohort + usage features</div>
+            <div class="ml-card-desc">Per-account P(churn) re-scored weekly. Replaces the flat-churn slider with cohort-weighted average. Drives proactive CSM intervention triggers exposed in Looker.</div>
+            <div class="ml-card-metrics">
+              <div class="ml-card-metric"><span class="ml-card-metric-name">AUC</span><span class="ml-card-metric-val">0.84</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Precision @20%</span><span class="ml-card-metric-val">0.62</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Re-train</span><span class="ml-card-metric-val">Weekly</span></div>
+            </div>
+          </div>
+
+          <div class="ml-card">
+            <div class="ml-card-name">LTV Forecast</div>
+            <div class="ml-card-method">BG/NBD + Gamma-Gamma</div>
+            <div class="ml-card-desc">Probabilistic CLV per cohort. Outputs 12, 24, 36-month LTV bands with confidence intervals rather than a single point estimate. Feeds the LTV figure shown across this app.</div>
+            <div class="ml-card-metrics">
+              <div class="ml-card-metric"><span class="ml-card-metric-name">MAPE</span><span class="ml-card-metric-val">11.4%</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Bands</span><span class="ml-card-metric-val">P10/50/90</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Cohort grain</span><span class="ml-card-metric-val">Month</span></div>
+            </div>
+          </div>
+
+          <div class="ml-card">
+            <div class="ml-card-name">Demand Forecast</div>
+            <div class="ml-card-method">Prophet · seasonality + regressors</div>
+            <div class="ml-card-desc">MRR &amp; new-logo forecast 90 days out with prediction intervals. Feeds Finance scenario planning and Sales capacity modeling.</div>
+            <div class="ml-card-metrics">
+              <div class="ml-card-metric"><span class="ml-card-metric-name">SMAPE</span><span class="ml-card-metric-val">8.2%</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Horizon</span><span class="ml-card-metric-val">90 days</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Re-train</span><span class="ml-card-metric-val">Daily</span></div>
+            </div>
+          </div>
+
+          <div class="ml-card">
+            <div class="ml-card-name">Funnel Anomaly</div>
+            <div class="ml-card-method">Isolation Forest · daily</div>
+            <div class="ml-card-desc">Flags step-level conversion drops vs. cohort baseline. Sends Slack alerts to the growth team with probable cause class — creative, traffic source, or technical regression.</div>
+            <div class="ml-card-metrics">
+              <div class="ml-card-metric"><span class="ml-card-metric-name">FPR</span><span class="ml-card-metric-val">3.1%</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Coverage</span><span class="ml-card-metric-val">All steps</span></div>
+              <div class="ml-card-metric"><span class="ml-card-metric-name">Latency</span><span class="ml-card-metric-val">Daily</span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card chart-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">MRR Forecast · 90-day Horizon with Prediction Intervals</div>
+              <div class="card-sub">Prophet output · point forecast plus P10 / P90 bands</div>
+            </div>
+            <div class="card-tag ml">Predictive</div>
+          </div>
+          <div class="canvas-wrap"><canvas id="c-ml-forecast"></canvas></div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <div class="footer">
+    <span class="footer-num">SCENARIO BUILDER · v1.0</span>
+    <div class="footer-sep"></div>
+    <span class="footer-txt">Snowflake · DBT · Looker · Python · XGBoost · Prophet</span>
+    <span class="footer-right" id="footer-route">01 · OVERVIEW</span>
+  </div>
+
+</div>
+
+<!-- ─── EDIT OVERLAY ─── -->
+<div class="ov" id="ov" onclick="if(event.target===this)ovClose()">
+  <div class="ov-card">
+    <div class="ov-seg" id="ov-seg">C1 · CHANNEL</div>
+    <div class="ov-title" id="ov-name">Paid Search</div>
+    <div class="ov-row">
+      <div class="ov-field">
+        <label class="ov-lbl">CAC ($)</label>
+        <input class="ov-inp" id="ov-cac" type="number" min="1">
+      </div>
+      <div class="ov-field">
+        <label class="ov-lbl">Spend ($/mo)</label>
+        <input class="ov-inp" id="ov-spend" type="number" min="0" step="500">
+      </div>
+    </div>
+    <div class="ov-actions">
+      <button class="ov-btn cancel" onclick="ovClose()">Cancel</button>
+      <button class="ov-btn save" onclick="ovSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
