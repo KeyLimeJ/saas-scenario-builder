@@ -7,7 +7,7 @@
 <meta name="description" content="Interactive SaaS scenario builder demonstrating data analytics leadership for Director-level interviews. Models acquisition, retention, unit economics, and predictive ML overlays.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,7 +31,7 @@
     --good:      #82C99B;
     --ml:        #8AB4F0;
     --grid:      rgba(255,255,255,0.04);
-    --font-display: 'Fraunces', Georgia, serif;
+    --font-display: 'Inter Tight', system-ui, sans-serif;
     --font-body:    'Inter Tight', system-ui, sans-serif;
     --font-num:     'JetBrains Mono', monospace;
   }
@@ -77,15 +77,15 @@
   }
   .sb-mark-letter {
     font-family: var(--font-display);
-    font-weight: 800; font-style: italic;
+    font-weight: 800;
     font-size: 26px; color: var(--accent);
-    letter-spacing: -0.04em; line-height: 1;
+    letter-spacing: -0.05em; line-height: 1;
   }
   .sb-mark-title {
     font-family: var(--font-display);
-    font-weight: 600; font-style: italic;
+    font-weight: 600;
     font-size: 14px; color: var(--ink);
-    letter-spacing: -0.01em; line-height: 1;
+    letter-spacing: -0.02em; line-height: 1;
   }
   .sb-tag {
     font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
@@ -142,8 +142,8 @@
     display: flex; flex-direction: column; gap: 4px;
   }
   .sb-foot-name {
-    font-family: var(--font-display); font-weight: 600; font-style: italic;
-    font-size: 13px; color: var(--ink);
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 13px; color: var(--ink); letter-spacing: -0.02em;
   }
   .sb-foot-role {
     font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -193,14 +193,150 @@
     margin-bottom: 4px;
   }
   .main-title {
-    font-family: var(--font-display); font-weight: 600; font-style: italic;
-    font-size: 22px; color: var(--ink);
-    letter-spacing: -0.02em; line-height: 1.1;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 24px; color: var(--ink);
+    letter-spacing: -0.035em; line-height: 1.05;
   }
   .main-sub {
     font-size: 12px; color: var(--ink-mid);
     margin-top: 4px; max-width: 720px;
     line-height: 1.4;
+  }
+
+  /* ─── TERM GLOSSARY ─── */
+  .term {
+    cursor: help;
+    border-bottom: 1px dotted currentColor;
+    opacity: 0.9;
+    transition: color 0.15s, border-bottom-color 0.15s, opacity 0.15s;
+  }
+  .term:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    opacity: 1;
+  }
+
+  .term-popover {
+    position: fixed;
+    z-index: 10000;
+    width: 320px;
+    background: var(--panel);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 14px 36px rgba(0,0,0,0.55);
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .term-popover.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .term-popover-name {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 13px; color: var(--accent);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .term-popover-def {
+    font-size: 12px; color: var(--ink-mid);
+    line-height: 1.55;
+  }
+  .term-popover-meta {
+    display: flex; flex-direction: column; gap: 5px;
+    padding-top: 10px; margin-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .term-popover-row {
+    display: flex; gap: 10px; align-items: baseline;
+  }
+  .term-popover-label {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 700;
+    flex-shrink: 0; min-width: 70px;
+  }
+  .term-popover-value {
+    font-size: 11px; color: var(--ink);
+    font-family: var(--font-num); font-weight: 600;
+    line-height: 1.35;
+  }
+
+  /* ─── CHART HELP — info icon + extended popover ─── */
+  .card-help {
+    background: transparent;
+    border: 1px solid var(--border-2);
+    color: var(--ink-soft);
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 10px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-left: 8px;
+    vertical-align: 1px;
+    padding: 0; line-height: 1;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+  }
+  .card-help:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    transform: scale(1.1);
+  }
+  .term-popover.chart-help { width: 360px; }
+  .term-popover-section {
+    padding-top: 10px; margin-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .term-popover-section:first-of-type {
+    border-top: none; padding-top: 0; margin-top: 4px;
+  }
+  .term-popover-section-lbl {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .term-popover-section-txt {
+    font-size: 12px; color: var(--ink-mid);
+    line-height: 1.5;
+  }
+  .term-popover-section-txt strong { color: var(--ink); font-weight: 600; }
+
+  /* ─── PERSISTENT KPI BAR ─── */
+  .kpi-bar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .kpi-bar-item {
+    padding: 10px 16px;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .kpi-bar-item:last-child { border-right: none; }
+  .kpi-bar-label {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .kpi-bar-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 16px; color: var(--ink);
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .kpi-bar-val.green { color: var(--accent); }
+  .kpi-bar-val.good  { color: var(--good); }
+  .kpi-bar-val.bad   { color: var(--bad); }
+  .kpi-bar-val.warn  { color: var(--warn); }
+  .kpi-bar-bench {
+    font-size: 8px; color: var(--ink-faint);
+    letter-spacing: 0.06em;
   }
 
   .main-body {
@@ -224,7 +360,7 @@
     gap: 0;
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
   }
   .kpi {
@@ -248,7 +384,7 @@
   .kpi-val.warn  { color: var(--warn); }
   .kpi-bench {
     font-size: 9px; color: var(--ink-faint);
-    font-style: italic; letter-spacing: 0.04em;
+    letter-spacing: 0.04em; font-weight: 500;
   }
 
   /* ─── COMPOSITE RIBBON (Overview only) ─── */
@@ -256,7 +392,7 @@
     display: flex; align-items: center;
     background: var(--panel-2);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 8px 16px;
     gap: 0;
   }
@@ -286,14 +422,14 @@
   .ribbon-val.bad  { color: var(--bad); }
   .ribbon-bench {
     font-size: 8px; color: var(--ink-faint);
-    font-style: italic;
+    font-weight: 500; letter-spacing: 0.04em;
   }
 
   /* ─── SECTIONS / CARDS ─── */
   .card {
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 14px 18px;
     display: flex; flex-direction: column;
   }
@@ -303,9 +439,9 @@
     gap: 14px;
   }
   .card-title {
-    font-family: var(--font-display); font-weight: 600; font-style: italic;
+    font-family: var(--font-display); font-weight: 600;
     font-size: 14px; color: var(--ink);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
   .card-sub {
     font-size: 10px; color: var(--ink-soft);
@@ -338,8 +474,8 @@
     color: var(--ink-soft); font-weight: 600;
   }
   .inp-hint {
-    font-size: 9px; color: var(--ink-faint); font-style: italic;
-    line-height: 1.4;
+    font-size: 9px; color: var(--ink-faint);
+    line-height: 1.4; font-weight: 500;
   }
   .slider-row { display: flex; align-items: center; gap: 10px; }
   .hrange {
@@ -431,6 +567,15 @@
     font-size: 8px; color: var(--ink-soft);
     letter-spacing: 0.08em; text-transform: uppercase;
   }
+  .ch-derived {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 11px; color: var(--ink-mid);
+    letter-spacing: 0.04em;
+  }
+  .ch-derived strong { color: var(--accent); font-weight: 700; }
 
   /* ─── EDIT OVERLAY ─── */
   .ov {
@@ -454,8 +599,9 @@
     color: var(--accent); margin-bottom: 4px;
   }
   .ov-title {
-    font-family: var(--font-display); font-weight: 600; font-style: italic;
+    font-family: var(--font-display); font-weight: 700;
     font-size: 18px; color: var(--ink); margin-bottom: 18px;
+    letter-spacing: -0.025em;
   }
   .ov-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
   .ov-field { display: flex; flex-direction: column; gap: 6px; }
@@ -499,8 +645,8 @@
     margin-bottom: 4px;
   }
   .ml-card-name {
-    font-family: var(--font-display); font-weight: 600; font-style: italic;
-    font-size: 14px; color: var(--ink); letter-spacing: -0.01em;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 14px; color: var(--ink); letter-spacing: -0.02em;
   }
   .ml-card-status {
     font-family: var(--font-num); font-weight: 700;
@@ -533,6 +679,25 @@
     font-size: 12px; color: var(--ink);
   }
 
+  /* ─── CHART TABS ─── */
+  .chart-tabs {
+    display: flex; gap: 4px; margin-bottom: 6px;
+  }
+  .chart-tab {
+    font-family: var(--font-body); font-weight: 600;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--border-2);
+    color: var(--ink-soft);
+    padding: 6px 12px; border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .chart-tab:hover { color: var(--ink); border-color: var(--ink-soft); }
+  .chart-tab.active {
+    background: var(--accent); color: var(--bg); border-color: var(--accent);
+  }
+
   /* ─── CHART WRAP ─── */
   .canvas-wrap { position: relative; flex: 1; min-height: 220px; }
   .canvas-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
@@ -558,6 +723,388 @@
     display: flex; align-items: center; justify-content: center;
     font-family: var(--font-num); font-weight: 700;
     font-size: 9px; color: var(--bg);
+  }
+
+  /* ─── ACQUISITION HERO ─── */
+  .acq-hero {
+    background: linear-gradient(135deg, rgba(197,224,99,0.10), rgba(197,224,99,0.02));
+    border: 1px solid rgba(197,224,99,0.3);
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: center;
+  }
+  .acq-hero-main { display: flex; flex-direction: column; gap: 4px; }
+  .acq-hero-eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  .acq-hero-num {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 64px; color: var(--ink);
+    letter-spacing: -0.04em; line-height: 1;
+  }
+  .acq-hero-cap {
+    font-size: 12px; color: var(--ink-mid);
+    margin-top: 4px; max-width: 480px; line-height: 1.4;
+  }
+  .acq-hero-side {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px; background: rgba(255,255,255,0.06);
+    border-radius: 8px; overflow: hidden;
+  }
+  .acq-hero-stat {
+    background: var(--panel);
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .acq-hero-stat-lbl {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .acq-hero-stat-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 15px; color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  /* ─── PER-CHANNEL COLUMNS ─── */
+  .ch-cols {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .ch-col2 {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 12px 10px;
+    display: flex; flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .ch-col2-head {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ch-col2-tag {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 10px; color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+  }
+  .ch-col2-name {
+    font-size: 12px; color: var(--ink); font-weight: 600;
+    line-height: 1.2;
+  }
+  .ch-col2-section-lbl {
+    font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ch-col2-section {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .ch-dial {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .ch-dial-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .ch-dial-lbl {
+    font-size: 9px; color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .ch-dial-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 11px; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .ch-dial-val.editable {
+    cursor: text;
+    padding: 1px 5px;
+    margin: -1px -5px;
+    border-radius: 3px;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .ch-dial-val.editable:hover {
+    background: rgba(197, 224, 99, 0.08);
+    box-shadow: 0 0 0 1px rgba(197, 224, 99, 0.25);
+  }
+  .ch-dial-edit {
+    width: 70px;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-family: var(--font-num);
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--ink);
+    outline: none;
+    text-align: right;
+    margin: -2px 0;
+    letter-spacing: -0.01em;
+  }
+  .ch-dial-edit:focus { border-color: var(--accent); }
+  .ch-dial input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 2px; border-radius: 99px;
+    background: var(--border-2); outline: none; cursor: pointer;
+  }
+  .ch-dial input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    cursor: pointer;
+  }
+  .ch-dial input[type=range]::-moz-range-thumb {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    cursor: pointer;
+  }
+  .ch-stages {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .ch-stage-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 2px 0;
+  }
+  .ch-stage-lbl {
+    font-size: 9px; color: var(--ink-soft); letter-spacing: 0.04em;
+  }
+  .ch-stage-val {
+    font-family: var(--font-num); font-weight: 600;
+    font-size: 11px; color: var(--ink-mid);
+  }
+  .ch-stage-row.paid {
+    border-top: 1px dashed var(--border-2);
+    margin-top: 2px; padding-top: 4px;
+  }
+  .ch-stage-row.paid .ch-stage-lbl {
+    color: var(--ink); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .ch-stage-row.paid .ch-stage-val {
+    color: var(--accent); font-weight: 700; font-size: 16px;
+  }
+  .ch-col2-cac {
+    padding: 7px 10px;
+    background: rgba(197,224,99,0.06);
+    border: 1px solid rgba(197,224,99,0.25);
+    border-radius: 6px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .ch-col2-cac-lbl {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 700;
+  }
+  .ch-col2-cac-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 14px; color: var(--accent);
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── TOTALS STRIP ─── */
+  .ch-totals {
+    background: var(--panel-2);
+    border: 1px solid var(--border-2);
+    border-radius: 8px;
+    padding: 12px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 1px;
+    align-items: center;
+  }
+  .ch-tot-item {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 0 12px;
+    border-right: 1px solid var(--border);
+  }
+  .ch-tot-item:last-child { border-right: none; }
+  .ch-tot-lbl {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 700;
+  }
+  .ch-tot-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 15px; color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .ch-tot-item.hero .ch-tot-val { color: var(--accent); font-size: 18px; }
+
+  /* ─── PER-CHANNEL FUNNEL MATRIX ─── */
+  .funnel-rates {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    padding: 12px 16px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+  .funnel-rate {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .funnel-rate-lbl {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .funnel-rate-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .funnel-rate-row input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 2px; border-radius: 99px;
+    background: var(--border-2); outline: none; cursor: pointer;
+  }
+  .funnel-rate-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    cursor: pointer;
+  }
+  .funnel-rate-row input[type=range]::-moz-range-thumb {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    cursor: pointer;
+  }
+  .funnel-rate-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 12px; color: var(--accent);
+    min-width: 42px; text-align: right;
+    letter-spacing: -0.01em;
+  }
+
+  .ch-matrix {
+    display: flex; flex-direction: column;
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .cm-row {
+    display: grid;
+    grid-template-columns: 36px 1.3fr 72px 78px 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 0;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .cm-row:last-child { border-bottom: none; }
+  .cm-row.head {
+    background: transparent;
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+    padding: 10px 14px;
+  }
+  .cm-row.body {
+    cursor: pointer;
+    background: var(--panel);
+  }
+  .cm-row.body:hover { background: var(--panel-2); }
+  .cm-row.total {
+    background: var(--panel-3);
+    border-top: 1px solid var(--border-2);
+    border-bottom: none;
+    font-weight: 700;
+  }
+  .cm-tag {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 10px; letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+  .cm-name {
+    font-size: 12px; color: var(--ink); font-weight: 500;
+  }
+  .cm-row.head .cm-name { color: var(--ink-soft); font-weight: 600; }
+  .cm-row.total .cm-name { color: var(--ink); font-weight: 700; }
+  .cm-cell {
+    font-family: var(--font-num); font-weight: 600;
+    font-size: 12px;
+    color: var(--ink-mid);
+    text-align: right;
+    padding-right: 12px;
+    letter-spacing: -0.01em;
+  }
+  .cm-row.body .cm-cell.paid { color: var(--ink); font-weight: 700; }
+  .cm-row.body .cm-cell.cac  { color: var(--accent); font-weight: 700; }
+  .cm-row.total .cm-cell { color: var(--ink); }
+  .cm-row.total .cm-cell.paid { color: var(--accent); font-size: 13px; }
+  .cm-row.total .cm-cell.cac  { color: var(--accent); }
+
+  /* ─── FUNNEL v2 ─── */
+  .funnel2 {
+    display: flex; flex-direction: column; gap: 0;
+    padding: 4px 0;
+  }
+  .funnel2-stage {
+    display: grid;
+    grid-template-columns: 140px 1fr 90px;
+    gap: 14px; align-items: center;
+    padding: 10px 0;
+  }
+  .funnel2-stage-name {
+    font-size: 11px; letter-spacing: 0.08em;
+    color: var(--ink-mid); font-weight: 600;
+    text-transform: uppercase;
+  }
+  .funnel2-bar-wrap {
+    height: 30px; background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px; overflow: hidden;
+    position: relative;
+  }
+  .funnel2-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transition: width 0.35s ease;
+  }
+  .funnel2-val {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 16px; color: var(--ink);
+    text-align: right; letter-spacing: -0.02em;
+  }
+  .funnel2-stage.terminal .funnel2-val {
+    color: var(--accent); font-size: 20px;
+  }
+  .funnel2-arrow {
+    display: grid;
+    grid-template-columns: 140px 1fr 90px;
+    gap: 14px; align-items: center;
+    padding: 4px 0 4px;
+  }
+  .funnel2-arrow-spacer { }
+  .funnel2-arrow-slider {
+    display: flex; align-items: center; gap: 10px;
+    padding-left: 8px;
+    border-left: 2px dotted var(--border-2);
+  }
+  .funnel2-arrow-lbl {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+    min-width: 110px;
+  }
+  .funnel2-arrow-slider input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    flex: 1; height: 2px; border-radius: 99px;
+    background: var(--border-2); outline: none; cursor: pointer;
+  }
+  .funnel2-arrow-slider input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    cursor: pointer;
+  }
+  .funnel2-arrow-slider input[type=range]::-moz-range-thumb {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg); cursor: pointer;
+  }
+  .funnel2-arrow-rate {
+    font-family: var(--font-num); font-weight: 700;
+    font-size: 11px; color: var(--accent);
+    min-width: 42px; text-align: right;
   }
 
   /* ─── FUNNEL VIZ ─── */
@@ -643,20 +1190,22 @@
   <aside class="sidebar">
     <div class="sb-brand">
       <div class="sb-mark">
-        <span class="sb-mark-letter">J.</span>
         <span class="sb-mark-title">Scenario Builder</span>
       </div>
       <div class="sb-tag">SaaS Analytics Demo</div>
     </div>
 
     <nav class="sb-nav">
-      <div class="sb-section-label">Analytics</div>
+      <div class="sb-section-label">Outcome</div>
 
       <div class="sb-item active" data-view="overview" onclick="goto('overview')">
-        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
-        <span>Overview</span>
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><path d="M2 12 L5 9 L8 11 L14 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 4 H14 V8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Growth Outcome</span>
         <span class="sb-item-num">01</span>
       </div>
+
+      <div class="sb-section-label">Drivers</div>
+
       <div class="sb-item" data-view="acquisition" onclick="goto('acquisition')">
         <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><path d="M2 13 L6 9 L9 11 L14 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="5" r="1.6" fill="currentColor"/></svg>
         <span>Acquisition</span>
@@ -672,17 +1221,22 @@
         <span>Retention</span>
         <span class="sb-item-num">04</span>
       </div>
+      <div class="sb-item" data-view="compounding" onclick="goto('compounding')">
+        <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><path d="M2 13 C 5 13, 8 12, 10 9 S 13 4, 14 2" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="1.5" fill="currentColor"/><line x1="2" y1="13" x2="13.5" y2="13" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 1.5" opacity="0.45"/></svg>
+        <span><span class="term" data-term="Compounding">Compounding</span></span>
+        <span class="sb-item-num">05</span>
+      </div>
       <div class="sb-item" data-view="unit-econ" onclick="goto('unit-econ')">
         <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="11" width="2.5" height="3" fill="currentColor"/><rect x="6" y="8" width="2.5" height="6" fill="currentColor"/><rect x="10" y="4" width="2.5" height="10" fill="currentColor"/></svg>
         <span>Unit Economics</span>
-        <span class="sb-item-num">05</span>
+        <span class="sb-item-num">06</span>
       </div>
 
       <div class="sb-section-label">Intelligence</div>
       <div class="sb-item" data-view="predictive" onclick="goto('predictive')">
         <svg class="sb-item-icon" viewBox="0 0 16 16" fill="none"><circle cx="5" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="11" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 7 L8 9 M11 7 L8 9" stroke="currentColor" stroke-width="1.3"/></svg>
         <span>Predictive · ML</span>
-        <span class="sb-item-num">06</span>
+        <span class="sb-item-num">07</span>
       </div>
     </nav>
 
@@ -700,78 +1254,83 @@
   <!-- ─── MAIN ─── -->
   <main class="main">
     <div class="main-head">
-      <div class="main-eyebrow" id="m-eyebrow">01 · OVERVIEW</div>
-      <div class="main-title" id="m-title">Executive Snapshot</div>
-      <div class="main-sub" id="m-sub">The six KPIs named in the role definition, recomputed live as scenario inputs change. Composite ratios on the ribbon below show how the business compounds on top of them.</div>
+      <div class="main-eyebrow" id="m-eyebrow">01 · GROWTH OUTCOME</div>
+      <div class="main-title" id="m-title">Where the Business Lands</div>
+      <div class="main-sub" id="m-sub">The headline result of every lever in this app. Walk left to right through the sidebar to see how Acquisition, Retention, and Compounding stack into this projection.</div>
+    </div>
+
+    <!-- Persistent KPI bar — always visible -->
+    <div class="kpi-bar">
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-label"><span class="term" data-term="ARR">ARR</span> · Year 1</span>
+        <span class="kpi-bar-val green" id="kb-arr">—</span>
+        <span class="kpi-bar-bench">Annualized M12 <span class="term" data-term="MRR">MRR</span></span>
+      </div>
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-label"><span class="term" data-term="ARPA">ARPA</span></span>
+        <span class="kpi-bar-val" id="kb-arpa">—</span>
+        <span class="kpi-bar-bench">Blended monthly + annual</span>
+      </div>
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-label"><span class="term" data-term="LTV">LTV</span></span>
+        <span class="kpi-bar-val" id="kb-ltv">—</span>
+        <span class="kpi-bar-bench" id="kb-ltv-method">BG/NBD model</span>
+      </div>
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-label"><span class="term" data-term="CAC">CAC</span> · Blended</span>
+        <span class="kpi-bar-val" id="kb-cac">—</span>
+        <span class="kpi-bar-bench">Weighted, 6 channels</span>
+      </div>
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-label"><span class="term" data-term="Churn">Churn</span> · Monthly</span>
+        <span class="kpi-bar-val warn" id="kb-churn">—</span>
+        <span class="kpi-bar-bench">Logo · target ≤ 3%</span>
+      </div>
+      <div class="kpi-bar-item">
+        <span class="kpi-bar-label"><span class="term" data-term="AOV">AOV</span> · Annual</span>
+        <span class="kpi-bar-val" id="kb-aov">—</span>
+        <span class="kpi-bar-bench">Annual contract value</span>
+      </div>
     </div>
 
     <div class="main-body">
 
-      <!-- ═══════════════ VIEW 01 · OVERVIEW ═══════════════ -->
+      <!-- ═══════════════ VIEW 01 · GROWTH OUTCOME ═══════════════ -->
       <div class="view active" id="v-overview">
-
-        <!-- JD KPI strip -->
-        <div class="kpi-strip">
-          <div class="kpi">
-            <span class="kpi-label">ARR · Year 1</span>
-            <span class="kpi-val green" id="o-arr">—</span>
-            <span class="kpi-bench">Annualized from end-month MRR</span>
-          </div>
-          <div class="kpi">
-            <span class="kpi-label">ARPA</span>
-            <span class="kpi-val" id="o-arpa">—</span>
-            <span class="kpi-bench">Blended monthly + annual</span>
-          </div>
-          <div class="kpi">
-            <span class="kpi-label">LTV</span>
-            <span class="kpi-val" id="o-ltv">—</span>
-            <span class="kpi-bench" id="o-ltv-method">BG/NBD model</span>
-          </div>
-          <div class="kpi">
-            <span class="kpi-label">CAC · Blended</span>
-            <span class="kpi-val" id="o-cac">—</span>
-            <span class="kpi-bench">Weighted across 6 channels</span>
-          </div>
-          <div class="kpi">
-            <span class="kpi-label">Churn · Monthly</span>
-            <span class="kpi-val warn" id="o-churn">—</span>
-            <span class="kpi-bench">Logo · target ≤ 3%</span>
-          </div>
-          <div class="kpi">
-            <span class="kpi-label">AOV · Annual</span>
-            <span class="kpi-val" id="o-aov">—</span>
-            <span class="kpi-bench">Annual contract value</span>
-          </div>
-        </div>
 
         <!-- Composite ribbon -->
         <div class="ribbon">
           <span class="ribbon-label">Composite</span>
           <div class="ribbon-items">
-            <div class="ribbon-item"><span class="ribbon-name">LTV:CAC</span><span class="ribbon-val good" id="o-ltvcac">—</span><span class="ribbon-bench">≥ 3x</span></div>
-            <div class="ribbon-item"><span class="ribbon-name">Payback</span><span class="ribbon-val warn" id="o-pay">—</span><span class="ribbon-bench">≤ 12 mo</span></div>
-            <div class="ribbon-item"><span class="ribbon-name">NRR</span><span class="ribbon-val good" id="o-nrr">—</span><span class="ribbon-bench">≥ 110%</span></div>
-            <div class="ribbon-item"><span class="ribbon-name">GRR</span><span class="ribbon-val good" id="o-grr">—</span><span class="ribbon-bench">≥ 90%</span></div>
-            <div class="ribbon-item"><span class="ribbon-name">Rule of 40</span><span class="ribbon-val good" id="o-r40">—</span><span class="ribbon-bench">≥ 40</span></div>
-            <div class="ribbon-item"><span class="ribbon-name">Magic #</span><span class="ribbon-val good" id="o-mn">—</span><span class="ribbon-bench">≥ 0.75</span></div>
+            <div class="ribbon-item"><span class="ribbon-name"><span class="term" data-term="LTV:CAC">LTV:CAC</span></span><span class="ribbon-val good" id="o-ltvcac">—</span><span class="ribbon-bench">≥ 3x</span></div>
+            <div class="ribbon-item"><span class="ribbon-name"><span class="term" data-term="CAC Payback">Payback</span></span><span class="ribbon-val warn" id="o-pay">—</span><span class="ribbon-bench">≤ 12 mo</span></div>
+            <div class="ribbon-item"><span class="ribbon-name"><span class="term" data-term="NRR">NRR</span></span><span class="ribbon-val good" id="o-nrr">—</span><span class="ribbon-bench">≥ 110%</span></div>
+            <div class="ribbon-item"><span class="ribbon-name"><span class="term" data-term="GRR">GRR</span></span><span class="ribbon-val good" id="o-grr">—</span><span class="ribbon-bench">≥ 90%</span></div>
+            <div class="ribbon-item"><span class="ribbon-name"><span class="term" data-term="Rule of 40">Rule of 40</span></span><span class="ribbon-val good" id="o-r40">—</span><span class="ribbon-bench">≥ 40</span></div>
+            <div class="ribbon-item"><span class="ribbon-name"><span class="term" data-term="Magic Number">Magic #</span></span><span class="ribbon-val good" id="o-mn">—</span><span class="ribbon-bench">≥ 0.75</span></div>
           </div>
         </div>
 
-        <!-- Main ARR chart -->
+        <!-- Main chart with tabs -->
         <div class="card chart-card tall">
           <div class="card-head">
             <div>
-              <div class="card-title">ARR &amp; Customer Stock · 24 mo</div>
-              <div class="card-sub">New + Expansion + Reactivation − Churn − Contraction</div>
+              <div class="chart-tabs">
+                <button class="chart-tab active" data-view="arr" onclick="setOverviewView('arr')">ARR · 24 mo</button>
+                <button class="chart-tab" data-view="mrr" onclick="setOverviewView('mrr')">MRR · 24 mo</button>
+                <button class="chart-tab" data-view="customers" onclick="setOverviewView('customers')">Customers · 24 mo</button>
+                <button class="card-help" data-chart-help="growth-outcome" title="What is this chart?">i</button>
+              </div>
+              <div class="card-sub" id="overview-chart-sub">Solid line = with compounding · Dashed = without referrals</div>
             </div>
-            <div class="card-tag">Scenario</div>
+            <div class="card-tag" id="overview-endpoint">M24 → —</div>
           </div>
           <div class="canvas-wrap"><canvas id="c-overview-stock"></canvas></div>
         </div>
 
         <div class="insight">
-          <span class="insight-eyebrow">Reading this view</span>
-          <span class="insight-txt">Each KPI above maps to the role definition. The composite ribbon is what a CFO or board actually opens a dashboard to see. Use the side nav to drive each lever and watch this overview recompute. The <strong>ML toggle</strong> in the sidebar footer swaps flat assumptions for model-driven inputs.</span>
+          <span class="insight-eyebrow">How to read this</span>
+          <span class="insight-txt">The <strong>solid line</strong> shows where the business lands with every lever working — acquisition, retention, and referrals compounding together. The <strong>dashed line</strong> shows the same business <strong>without the referral loop</strong>. The gap between them is the value of the compounding engine. Walk the sidebar top-to-bottom to set each driver.</span>
         </div>
 
       </div>
@@ -779,63 +1338,61 @@
       <!-- ═══════════════ VIEW 02 · ACQUISITION ═══════════════ -->
       <div class="view" id="v-acquisition">
 
+        <!-- HERO: total new customers / mo -->
+        <div class="acq-hero">
+          <div class="acq-hero-main">
+            <span class="acq-hero-eyebrow">New Customers / Month</span>
+            <span class="acq-hero-num" id="acq-hero-num">—</span>
+            <span class="acq-hero-cap">Output of the full funnel below, summed across all six channels.</span>
+          </div>
+          <div class="acq-hero-side">
+            <div class="acq-hero-stat">
+              <span class="acq-hero-stat-lbl">Monthly Spend</span>
+              <span class="acq-hero-stat-val" id="acq-hero-spend">—</span>
+            </div>
+            <div class="acq-hero-stat">
+              <span class="acq-hero-stat-lbl">Blended CAC</span>
+              <span class="acq-hero-stat-val" id="acq-hero-cac">—</span>
+            </div>
+            <div class="acq-hero-stat">
+              <span class="acq-hero-stat-lbl">Funnel V→Paid</span>
+              <span class="acq-hero-stat-val" id="acq-hero-funnel">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PER-CHANNEL FUNNEL COLUMNS -->
         <div class="card">
           <div class="card-head">
             <div>
-              <div class="card-title">Channel Mix · 6 Acquisition Sources</div>
-              <div class="card-sub">Click any cell to edit CAC or spend. New-logo volume scales with the funnel below.</div>
+              <div class="card-title">Acquisition Funnel · Per Channel</div>
+              <div class="card-sub">Every channel has its own spend, CPM, and conversion rates. Drag any dial and the funnel cascades — CAC pops out at the bottom.</div>
             </div>
             <div class="card-tag" id="acq-total-tag">— new/mo</div>
           </div>
-          <div class="ch-grid" id="ch-grid"></div>
+          <div class="ch-cols" id="ch-cols"></div>
         </div>
 
-        <div class="row-2-asym">
-          <div class="card">
-            <div class="card-head">
-              <div>
-                <div class="card-title">Funnel Conversion</div>
-                <div class="card-sub">Stage-level rates · cumulative V→Paid drives volume lift</div>
-              </div>
-              <div class="card-tag" id="funnel-rate-tag">— %</div>
-            </div>
-            <div class="inp-grp" style="margin-bottom:14px;">
-              <span class="inp-label">Visitor → Signup</span>
-              <div class="slider-row">
-                <input type="range" class="hrange" id="f-signup" min="1" max="20" step="0.5" value="6">
-                <span class="range-val" id="f-signup-v">6.0%</span>
-              </div>
-            </div>
-            <div class="inp-grp" style="margin-bottom:14px;">
-              <span class="inp-label">Signup → Trial</span>
-              <div class="slider-row">
-                <input type="range" class="hrange" id="f-trial" min="10" max="100" step="1" value="55">
-                <span class="range-val" id="f-trial-v">55%</span>
-              </div>
-            </div>
-            <div class="inp-grp">
-              <span class="inp-label">Trial → Paid</span>
-              <div class="slider-row">
-                <input type="range" class="hrange" id="f-paid" min="5" max="60" step="0.5" value="22">
-                <span class="range-val" id="f-paid-v">22.0%</span>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head">
-              <div>
-                <div class="card-title">Funnel Stages — Visitors → Paid</div>
-                <div class="card-sub">100k visitor cohort projected through stage rates</div>
-              </div>
-            </div>
-            <div class="funnel-viz" id="funnel-viz"></div>
-          </div>
+        <!-- TOTALS STRIP -->
+        <div class="ch-totals">
+          <div class="ch-tot-item"><span class="ch-tot-lbl">Total Spend</span><span class="ch-tot-val" id="tot-spend">—</span></div>
+          <div class="ch-tot-item"><span class="ch-tot-lbl">Impressions</span><span class="ch-tot-val" id="tot-imp">—</span></div>
+          <div class="ch-tot-item"><span class="ch-tot-lbl">Visitors</span><span class="ch-tot-val" id="tot-vis">—</span></div>
+          <div class="ch-tot-item"><span class="ch-tot-lbl">Signups</span><span class="ch-tot-val" id="tot-sig">—</span></div>
+          <div class="ch-tot-item"><span class="ch-tot-lbl">Trials</span><span class="ch-tot-val" id="tot-tri">—</span></div>
+          <div class="ch-tot-item hero"><span class="ch-tot-lbl">Paid Customers</span><span class="ch-tot-val" id="tot-paid">—</span></div>
+          <div class="ch-tot-item"><span class="ch-tot-lbl">Blended <span class="term" data-term="CAC">CAC</span></span><span class="ch-tot-val" id="tot-cac">—</span></div>
+          <div class="ch-tot-item"><span class="ch-tot-lbl">V→Paid</span><span class="ch-tot-val" id="tot-conv">—</span></div>
         </div>
 
+        <!-- Hidden compat element for older code paths -->
+        <span id="funnel-rate-tag" style="display:none;"></span>
+
+        <!-- CAC PAYBACK -->
         <div class="card chart-card">
           <div class="card-head">
             <div>
-              <div class="card-title">CAC Payback · by Channel</div>
+              <div class="card-title">CAC Payback · by Channel<button class="card-help" data-chart-help="acq-payback" title="What is this chart?">i</button></div>
               <div class="card-sub">Months to recover CAC at blended ARPA × gross margin</div>
             </div>
             <div class="card-tag warn">Lower is better</div>
@@ -858,31 +1415,49 @@
           </div>
           <div class="inp-row four">
             <div class="inp-grp">
-              <span class="inp-label">ARPA ($/mo)</span>
+              <span class="inp-label"><span class="term" data-term="ARPA">ARPA</span> ($/mo)</span>
               <input type="number" class="num-inp" id="m-arpa" value="180" min="10" step="5">
               <span class="inp-hint">Monthly average revenue per account</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">AOV — annual ($)</span>
+              <span class="inp-label"><span class="term" data-term="AOV">AOV</span> — annual ($)</span>
               <input type="number" class="num-inp" id="m-aov" value="2400" min="100" step="100">
               <span class="inp-hint">Annual contract value</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">% Annual contracts</span>
+              <span class="inp-label">% <span class="term" data-term="Annual contracts">Annual contracts</span></span>
               <div class="slider-row">
                 <input type="range" class="hrange" id="m-annual" min="0" max="100" step="5" value="35">
                 <span class="range-val" id="m-annual-v">35%</span>
               </div>
-              <span class="inp-hint">Annual vs. monthly billing mix</span>
+              <span class="inp-hint">Share of customers paying yearly (AOV upfront) vs monthly. Shifts blended ARPA toward $AOV/12.</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">Expansion / mo</span>
+              <span class="inp-label"><span class="term" data-term="Expansion">Expansion</span> / mo</span>
               <div class="slider-row">
                 <input type="range" class="hrange" id="m-exp" min="0" max="8" step="0.1" value="1.8">
                 <span class="range-val" id="m-exp-v">1.8%</span>
               </div>
-              <span class="inp-hint">Upsell / seat growth on base</span>
+              <span class="inp-hint">Existing customers spending more (upsells, more seats). % of current MRR — compounds month over month.</span>
             </div>
+          </div>
+
+          <!-- Cost structure — gross margin sits on its own row since it's a cost lever, not pricing -->
+          <div class="inp-row" style="grid-template-columns: 1fr; margin-top: 14px;">
+            <div class="inp-grp">
+              <span class="inp-label"><span class="term" data-term="Gross Margin">Gross Margin</span></span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="m-gm" min="40" max="95" step="1" value="72">
+                <span class="range-val" id="m-gm-v">72%</span>
+              </div>
+              <span class="inp-hint">Share of revenue left after the cost of delivering the service (hosting, payment processing, customer support). Feeds LTV, CAC Payback, and Rule of 40. B2B SaaS norm: 70–85%.</span>
+            </div>
+          </div>
+
+          <!-- Live breakdown: shows exactly how the levers combine into MRR -->
+          <div class="insight" style="margin-top:14px;">
+            <span class="insight-eyebrow">How these levers compound</span>
+            <span class="insight-txt" id="mon-breakdown">—</span>
           </div>
         </div>
 
@@ -890,8 +1465,8 @@
           <div class="card chart-card">
             <div class="card-head">
               <div>
-                <div class="card-title">MRR Composition · 24 mo</div>
-                <div class="card-sub">New · Expansion · Churn · Contraction stacked</div>
+                <div class="card-title">MRR Composition · 24 mo<button class="card-help" data-chart-help="mon-stack" title="What is this chart?">i</button></div>
+                <div class="card-sub" id="mon-stack-sub">M1 New MRR = customers from Acquisition × ARPA. Expansion/Churn/Contraction = % of current MRR base.</div>
               </div>
               <div class="card-tag">Stacked</div>
             </div>
@@ -900,7 +1475,7 @@
           <div class="card chart-card">
             <div class="card-head">
               <div>
-                <div class="card-title">Revenue Mix · Annual vs. Monthly</div>
+                <div class="card-title">Revenue Mix · Annual vs. Monthly<button class="card-help" data-chart-help="mon-mix" title="What is this chart?">i</button></div>
                 <div class="card-sub">Share of ARR by contract type, projected end-Y1</div>
               </div>
               <div class="card-tag">Mix</div>
@@ -924,7 +1499,7 @@
           </div>
           <div class="inp-row four">
             <div class="inp-grp">
-              <span class="inp-label">Logo churn / mo</span>
+              <span class="inp-label">Logo <span class="term" data-term="Churn">churn</span> / mo</span>
               <div class="slider-row">
                 <input type="range" class="hrange warn" id="r-logo" min="0.5" max="10" step="0.1" value="3.2">
                 <span class="range-val" id="r-logo-v">3.2%</span>
@@ -932,7 +1507,7 @@
               <span class="inp-hint">Account cancellations</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">Revenue churn / mo</span>
+              <span class="inp-label">Revenue <span class="term" data-term="Churn">churn</span> / mo</span>
               <div class="slider-row">
                 <input type="range" class="hrange warn" id="r-rev" min="0.5" max="10" step="0.1" value="4.0">
                 <span class="range-val" id="r-rev-v">4.0%</span>
@@ -940,7 +1515,7 @@
               <span class="inp-hint">Net of downgrades</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">Contraction / mo</span>
+              <span class="inp-label"><span class="term" data-term="Contraction">Contraction</span> / mo</span>
               <div class="slider-row">
                 <input type="range" class="hrange warn" id="r-contract" min="0" max="5" step="0.1" value="0.8">
                 <span class="range-val" id="r-contract-v">0.8%</span>
@@ -948,7 +1523,7 @@
               <span class="inp-hint">Seat reductions</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">Winback / mo</span>
+              <span class="inp-label"><span class="term" data-term="Winback">Winback</span> / mo</span>
               <div class="slider-row">
                 <input type="range" class="hrange" id="r-winback" min="0" max="20" step="0.5" value="6">
                 <span class="range-val" id="r-winback-v">6.0%</span>
@@ -962,7 +1537,7 @@
           <div class="card chart-card">
             <div class="card-head">
               <div>
-                <div class="card-title">Cohort Retention Heatmap</div>
+                <div class="card-title">Cohort Retention Heatmap<button class="card-help" data-chart-help="cohort" title="What is this chart?">i</button></div>
                 <div class="card-sub">Rows = cohort · cols = months since signup</div>
               </div>
               <div class="card-tag">8 × 8</div>
@@ -975,13 +1550,91 @@
           <div class="card chart-card">
             <div class="card-head">
               <div>
-                <div class="card-title">NRR &amp; GRR Trend · 12 mo</div>
+                <div class="card-title"><span class="term" data-term="NRR">NRR</span> &amp; <span class="term" data-term="GRR">GRR</span> Trend · 12 mo<button class="card-help" data-chart-help="ret-trend" title="What is this chart?">i</button></div>
                 <div class="card-sub">Net and gross retention compounding under current assumptions</div>
               </div>
               <div class="card-tag good">Retention</div>
             </div>
             <div class="canvas-wrap"><canvas id="c-ret-trend"></canvas></div>
           </div>
+        </div>
+
+      </div>
+
+      <!-- ═══════════════ VIEW 05 · COMPOUNDING ═══════════════ -->
+      <div class="view" id="v-compounding">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Referral Loop · The Multiplier</div>
+              <div class="card-sub">When customers bring customers, growth stops being linear. The viral coefficient turns acquisition spend into compounding base.</div>
+            </div>
+            <div class="card-tag" id="comp-k-tag">k = —</div>
+          </div>
+          <div class="inp-row three">
+            <div class="inp-grp">
+              <span class="inp-label"><span class="term" data-term="Viral coefficient">Viral Coefficient</span> (k)</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="v-k" min="0" max="40" step="0.5" value="8">
+                <span class="range-val" id="v-k-v">8.0%</span>
+              </div>
+              <span class="inp-hint">% of active customers who refer 1 new logo per month</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">Referral Lag</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="v-lag" min="1" max="6" step="1" value="2">
+                <span class="range-val" id="v-lag-v">2 mo</span>
+              </div>
+              <span class="inp-hint">Months from referral to paying account</span>
+            </div>
+            <div class="inp-grp">
+              <span class="inp-label">Conversion · Referred</span>
+              <div class="slider-row">
+                <input type="range" class="hrange" id="v-conv" min="20" max="100" step="1" value="65">
+                <span class="range-val" id="v-conv-v">65%</span>
+              </div>
+              <span class="inp-hint">Higher than paid · referrals self-qualify</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card chart-card tall">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Linear vs. Compounded Growth<button class="card-help" data-chart-help="comp-overlay" title="What is this chart?">i</button></div>
+              <div class="card-sub">Same acquisition spend · the only difference is whether the referral loop is on</div>
+            </div>
+            <div class="card-tag" id="comp-gap-tag">M24 gap → —</div>
+          </div>
+          <div class="canvas-wrap"><canvas id="c-comp-overlay"></canvas></div>
+        </div>
+
+        <div class="row-2">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Compounding Contribution · M24<button class="card-help" data-chart-help="comp-mix" title="What is this chart?">i</button></div>
+                <div class="card-sub">Where new logos come from at month 24</div>
+              </div>
+            </div>
+            <div class="canvas-wrap" style="min-height:200px;"><canvas id="c-comp-mix"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Sensitivity · k-factor<button class="card-help" data-chart-help="comp-sens" title="What is this chart?">i</button></div>
+                <div class="card-sub">ARR at M24 across a range of viral coefficients</div>
+              </div>
+            </div>
+            <div class="canvas-wrap" style="min-height:200px;"><canvas id="c-comp-sens"></canvas></div>
+          </div>
+        </div>
+
+        <div class="insight ml">
+          <span class="insight-eyebrow">Why this matters</span>
+          <span class="insight-txt">A viral coefficient of <strong>0%</strong> means every new customer costs CAC. A coefficient of <strong>10%</strong> means one in ten active customers brings a new one, for free, every month. At scale, this is the difference between a business that <strong>plateaus</strong> when ad spend caps out and one that <strong>compounds</strong>. Adjust the lever and watch the gap on the chart above widen.</span>
         </div>
 
       </div>
@@ -999,22 +1652,22 @@
           </div>
           <div class="inp-row four">
             <div class="inp-grp">
-              <span class="inp-label">LTV</span>
+              <span class="inp-label"><span class="term" data-term="LTV">LTV</span></span>
               <span class="kpi-val" id="ue-ltv" style="font-size:22px;">—</span>
               <span class="inp-hint" id="ue-ltv-meth">BG/NBD probabilistic CLV</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">CAC · blended</span>
+              <span class="inp-label"><span class="term" data-term="CAC">CAC</span> · blended</span>
               <span class="kpi-val" id="ue-cac" style="font-size:22px;">—</span>
               <span class="inp-hint">Weighted across 6 channels</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">LTV : CAC</span>
+              <span class="inp-label"><span class="term" data-term="LTV:CAC">LTV : CAC</span></span>
               <span class="kpi-val good" id="ue-ratio" style="font-size:22px;">—</span>
               <span class="inp-hint">Target ≥ 3x</span>
             </div>
             <div class="inp-grp">
-              <span class="inp-label">CAC Payback</span>
+              <span class="inp-label"><span class="term" data-term="CAC Payback">CAC Payback</span></span>
               <span class="kpi-val warn" id="ue-payback" style="font-size:22px;">—</span>
               <span class="inp-hint">Target ≤ 12 mo</span>
             </div>
@@ -1025,7 +1678,7 @@
           <div class="card chart-card">
             <div class="card-head">
               <div>
-                <div class="card-title">LTV:CAC by Channel</div>
+                <div class="card-title"><span class="term" data-term="LTV:CAC">LTV:CAC</span> by Channel<button class="card-help" data-chart-help="ue-ratio" title="What is this chart?">i</button></div>
                 <div class="card-sub">Green ≥ 3x · Amber 1.5–3x · Red &lt; 1.5x</div>
               </div>
               <div class="card-tag">Channel</div>
@@ -1035,7 +1688,7 @@
           <div class="card chart-card">
             <div class="card-head">
               <div>
-                <div class="card-title">CAC Payback by Channel</div>
+                <div class="card-title"><span class="term" data-term="CAC Payback">CAC Payback</span> by Channel<button class="card-help" data-chart-help="ue-payback" title="What is this chart?">i</button></div>
                 <div class="card-sub">Months to recover CAC, lower is better</div>
               </div>
               <div class="card-tag warn">Payback</div>
@@ -1113,7 +1766,7 @@
         <div class="card chart-card">
           <div class="card-head">
             <div>
-              <div class="card-title">MRR Forecast · 90-day Horizon with Prediction Intervals</div>
+              <div class="card-title">MRR Forecast · 90-day Horizon with Prediction Intervals<button class="card-help" data-chart-help="ml-forecast" title="What is this chart?">i</button></div>
               <div class="card-sub">Prophet output · point forecast plus P10 / P90 bands</div>
             </div>
             <div class="card-tag ml">Predictive</div>
@@ -1143,19 +1796,29 @@
     <div class="ov-title" id="ov-name">Paid Search</div>
     <div class="ov-row">
       <div class="ov-field">
-        <label class="ov-lbl">CAC ($)</label>
-        <input class="ov-inp" id="ov-cac" type="number" min="1">
+        <label class="ov-lbl">CPM ($/1000 impressions)</label>
+        <input class="ov-inp" id="ov-cpm" type="number" min="0.5" step="1">
       </div>
       <div class="ov-field">
         <label class="ov-lbl">Spend ($/mo)</label>
         <input class="ov-inp" id="ov-spend" type="number" min="0" step="500">
       </div>
     </div>
+    <div class="ov-derived" id="ov-derived" style="margin-bottom:18px; padding:10px 12px; background:var(--panel-2); border:1px solid var(--border); border-radius:6px; font-size:11px; color:var(--ink-mid); line-height:1.6;">
+      —
+    </div>
     <div class="ov-actions">
       <button class="ov-btn cancel" onclick="ovClose()">Cancel</button>
       <button class="ov-btn save" onclick="ovSave()">Save</button>
     </div>
   </div>
+</div>
+
+<!-- Glossary popover (single instance, reused) -->
+<div class="term-popover" id="term-popover" role="dialog" aria-label="Term definition">
+  <div class="term-popover-name"></div>
+  <div class="term-popover-def"></div>
+  <div class="term-popover-meta"></div>
 </div>
 
 <script src="app.js"></script>
